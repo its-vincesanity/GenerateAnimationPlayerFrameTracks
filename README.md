@@ -5,6 +5,10 @@
 
 The `GenerateAnimationPlayerFrameTracks` plugin is designed for the Godot Engine, specifically to enhance the `AnimationPlayer` for `Sprite2D` nodes. This plugin allows developers to efficiently generate animation tracks via an extended user interface, streamlining the animation process for `Sprite2D` nodes.
 
+## Preview
+
+![Preview](./assets/preview.png)
+
 ## Features
 
 -   Extended UI for AnimationPlayer: Improves the existing `AnimationPlayer` node with additional UI elements for ease of use.
