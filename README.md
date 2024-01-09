@@ -13,7 +13,7 @@ The `GenerateAnimationPlayerFrameTracks` plugin is designed for the Godot Engine
 
 ## Prerequisites
 
--   Godot Engine: Compatible with Godot version 3.x or newer.
+-   Godot Engine: Compatible with Godot version 4.x or newer.
 -   Sprite2D Node: The plugin is tailored for use with `Sprite2D` nodes.
 -   AnimationPlayer Node: An `AnimationPlayer` node must be attached to the `Sprite2D` node.
 
