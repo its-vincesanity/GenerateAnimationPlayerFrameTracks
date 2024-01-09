@@ -50,22 +50,23 @@ func setup_gui():
 	form_container.add_child(generate_text_input_section("Animation Library Name", "[Global]"))
 	form_container.add_child(generate_text_input_section("Animation Name", "STAND_SOUTH"))
 	
-	form_container.add_child(generate_spin_box_section("Duration (Each frame)", .2, .1))
+	form_container.add_child(generate_spin_box_section("Frame Duration", .35, .1))
 	form_container.add_child(generate_spin_box_section("Row", 1, 1))
-	form_container.add_child(generate_spin_box_section("From (Frame)", 1, 1))
-	form_container.add_child(generate_spin_box_section("To (Frame)", 2, 1))
+	form_container.add_child(generate_spin_box_section("From (Frames start with 0)", 0, 1))
+	form_container.add_child(generate_spin_box_section("To (Frames start with 0)", 0, 1))
 	
 	form_container.add_child(generate_checkbox_section("Alternate", false))
 	form_container.add_child(generate_checkbox_section("Loop", true))
+	
+	var action_button = Button.new()
+	action_button.text = "Generate"
+	action_button.pressed.connect(self.on_auto_generate_button_pressed)
+	form_container.add_child(action_button)
 	
 	var delete_button = Button.new()
 	delete_button.text = "Delete Tracks"
 	delete_button.pressed.connect(self.on_delete_tracks_button_pressed)
 	form_container.add_child(delete_button)
-	var action_button = Button.new()
-	action_button.text = "Generate"
-	action_button.pressed.connect(self.on_auto_generate_button_pressed)
-	form_container.add_child(action_button)
 	
 	form_container.hide();
 
@@ -87,9 +88,16 @@ func on_toggle_form_button_pressed():
 		toggle_button.set_button_icon(get_icon("ArrowDown"))
 
 func on_delete_tracks_button_pressed():
-	for animation_library in currentAnimationPlayer.get_animation_library_list():
-		currentAnimationPlayer.remove_animation_library(animation_library)
-	
+	var lib_names = currentAnimationPlayer.get_animation_library_list()
+	var animation_names = currentAnimationPlayer.get_animation_list()
+	for lib_name in lib_names:
+		var lib: AnimationLibrary = currentAnimationPlayer.get_animation_library(lib_name)
+		for animation_name in animation_names:
+			if lib.has_animation(animation_name):
+				lib.remove_animation(animation_name)
+				if lib_name == "":
+					lib_name = "[Global]"
+				print(animation_name + " was successfully removed in " + lib_name)
 
 func on_auto_generate_button_pressed():
 	var parent = currentAnimationPlayer.get_parent();
@@ -113,8 +121,11 @@ func on_auto_generate_button_pressed():
 			var animation = Animation.new()
 			var track_index = animation.add_track(Animation.TYPE_VALUE)
 			var framesRange = get_frame_range(from, to, row, alternate)
-			var duration:float = framesRange.size() * frameDuration
+			var animation_length:float = framesRange.size() * frameDuration
+			animation.resource_name = animationName
+			animation.length = animation_length
 			animation.track_set_path(track_index, NodePath(".:frame"))
+			animation.value_track_set_update_mode(track_index, animation.UPDATE_DISCRETE)
 			var index = 0;
 			for itemPos in framesRange:
 				animation.track_insert_key(track_index, frameDuration * index, itemPos)
@@ -123,7 +134,6 @@ func on_auto_generate_button_pressed():
 				animation.set_loop_mode(Animation.LOOP_LINEAR)
 			else:
 				animation.set_loop_mode(Animation.LOOP_NONE)
-			animation.length = duration
 
 			var animation_lib: AnimationLibrary;
 			if currentAnimationPlayer.has_animation_library(animationLibraryName):
@@ -201,7 +211,7 @@ func get_frame_range(from: int, to: int, row: int, alternate: bool) -> Array:
 	if alternate:
 		initial_range.reverse()
 		for index in initial_range:
-			if index != initial_range.size() - 1 && index != 0:
+			if index != to && index != from:
 				alternated_range.append(index);
 	return alternated_range;
 

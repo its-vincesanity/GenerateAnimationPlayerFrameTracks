@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 assets/**/*.import
+test/**/*
+project.godot
+icon.svg
+icon.svg.import
