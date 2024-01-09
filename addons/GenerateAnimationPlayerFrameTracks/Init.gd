@@ -46,6 +46,11 @@ func setup_gui():
 	toggle_button.pressed.connect(self.on_toggle_form_button_pressed)
 	
 	head_container.add_child(toggle_button)
+	
+	var delete_button = Button.new()
+	delete_button.text = "Delete Animations"
+	delete_button.pressed.connect(self.on_delete_animations_button_pressed)
+	form_container.add_child(delete_button)
 
 	form_container.add_child(generate_text_input_section("Animation Library Name", "[Global]"))
 	form_container.add_child(generate_text_input_section("Animation Name", "STAND_SOUTH"))
@@ -62,11 +67,6 @@ func setup_gui():
 	action_button.text = "Generate"
 	action_button.pressed.connect(self.on_auto_generate_button_pressed)
 	form_container.add_child(action_button)
-	
-	var delete_button = Button.new()
-	delete_button.text = "Delete Tracks"
-	delete_button.pressed.connect(self.on_delete_tracks_button_pressed)
-	form_container.add_child(delete_button)
 	
 	form_container.hide();
 
@@ -87,7 +87,15 @@ func on_toggle_form_button_pressed():
 		forms_hidden = true;
 		toggle_button.set_button_icon(get_icon("ArrowDown"))
 
-func on_delete_tracks_button_pressed():
+func on_delete_animations_button_pressed():
+	var confirm_dialog = ConfirmationDialog.new()
+	confirm_dialog.title = "Confirm deletion"
+	confirm_dialog.dialog_text = "Are you sure you want to delete all animations of " + currentAnimationPlayer.name + "?"
+	get_editor_interface().get_base_control().add_child(confirm_dialog)
+	confirm_dialog.popup_centered()
+	confirm_dialog.connect("confirmed", self.delete_animations)
+
+func delete_animations(): 
 	var lib_names = currentAnimationPlayer.get_animation_library_list()
 	var animation_names = currentAnimationPlayer.get_animation_list()
 	for lib_name in lib_names:
