@@ -53,7 +53,7 @@ func setup_gui():
 	form_container.add_child(delete_button)
 
 	form_container.add_child(generate_text_input_section("Animation Library Name", "[Global]"))
-	form_container.add_child(generate_text_input_section("Animation Name", "STAND_SOUTH"))
+	form_container.add_child(generate_text_input_section("Animation Name", "STANDING_SOUTH"))
 	
 	form_container.add_child(generate_spin_box_section("Frame Duration", .35, .1))
 	form_container.add_child(generate_spin_box_section("Row", 1, 1))
@@ -111,16 +111,16 @@ func on_auto_generate_button_pressed():
 	var parent = currentAnimationPlayer.get_parent();
 	if parent is Sprite2D:
 		var forms = plugin_container.get_children()[1].get_children();
-		var animationLibraryName:String = forms[0].get_children()[1].text;
+		var animationLibraryName:String = forms[1].get_children()[1].text;
 		if animationLibraryName == "[Global]":
 			animationLibraryName = "";
-		var animationName:String = forms[1].get_children()[1].text;
-		var frameDuration:float = forms[2].get_children()[2].value;
-		var row:int = forms[3].get_children()[2].value;
-		var from:int = forms[4].get_children()[2].value;
-		var to:int = forms[5].get_children()[2].value;
-		var alternate:bool = forms[6].get_children()[2].is_pressed()
-		var loop:bool = forms[7].get_children()[2].is_pressed();
+		var animationName:String = forms[2].get_children()[1].text;
+		var frameDuration:float = forms[3].get_children()[2].value;
+		var row:int = forms[4].get_children()[2].value;
+		var from:int = forms[5].get_children()[2].value;
+		var to:int = forms[6].get_children()[2].value;
+		var alternate:bool = forms[7].get_children()[2].is_pressed()
+		var loop:bool = forms[8].get_children()[2].is_pressed();
 		if from > to:
 			push_error("From (" + str(from) + ") is higher then To (" + str(to) + "). Generating frames aborted.")
 		elif from > row * parent.hframes:
